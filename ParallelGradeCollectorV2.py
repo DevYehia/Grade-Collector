@@ -45,10 +45,6 @@ def printGrades(falls,springs,summers):
         if(len(falls) == 0 and len(springs) == 0 and len(summers) == 0):
             print("GRADE NOT AVAILABLE YET")    
 
-
-
-
-
 def checkmode(text,mode):
     if mode ==  FALL_MODE:
         if "Spring" in text or "Summer" in text:
@@ -67,19 +63,17 @@ def checkmode(text,mode):
             return True
 
 
-
-
-
 def subjectInfo(head,session,falls,springs,summers,mode):
     courseName = head.contents[0]
     if checkmode(courseName,mode) == False:
         return
-    try:
-        r3 = session.get(head["href"])
-    except:
-        print("Subject Collection Failed -- Retrying...")
-        subjectInfo(head,session,falls,springs,summers,mode)
-        return
+    while True:
+        try:
+            r3 = session.get(head["href"])
+            break
+        except:
+            print("Subject Collection Failed -- Retrying...")
+            continue
     soup3 = BeautifulSoup(r3.text,features="html.parser")
     lis= soup3.find_all("li")
     bs= soup3.find_all("b")
@@ -98,30 +92,28 @@ def subjectInfo(head,session,falls,springs,summers,mode):
                 summers.append(courseName + ": " + creditH + ' Grade ' + j.contents[0])
 
 
-def doIt(mail,password,year,mode):            
+def login(mail,password):
     url = 'https://eng.asu.edu.eg/login'
     login_data = dict()
     login_data["email"] = mail
     login_data["password"] = password
-    startYear = year
     x = session.get(url)
     print("Got to Login Page")
     soup = BeautifulSoup(x.text,features="html.parser")
     token = soup.find("input",{"name" : "_token"})["value"]
     login_data["_token"] = token
-
     r = session.post(url, data=login_data)
     print("Logged in!!!")
-    r = session.get("https://eng.asu.edu.eg/dashboard/my_courses")
-    print("At the Dashboard")
-    soup = BeautifulSoup(r.text,features="html.parser")
-    option_all = soup.find_all("option")
-    startYear = option_all[len(option_all)-int(startYear)]["value"].split("/")[0]
 
-    r = session.get("https://eng.asu.edu.eg/dashboard/my_courses?years=" + startYear + "%2F" + str(int(startYear)+1) )
+def getYear(year):
+    r = session.get("https://eng.asu.edu.eg/dashboard/my_courses?years=" + year + "%2F" + str(int(year)+1) )
     print("Got the year")
     soup = BeautifulSoup(r.text,features="html.parser")
     a_all = soup.find_all("a")
+    return a_all
+
+
+def doIt(a_all,mode):           
     threads = []
     heads = []
     falls = []
@@ -141,18 +133,25 @@ def doIt(mail,password,year,mode):
 def getGrade():
     mail = input("Please enter your ID: ") + "@eng.asu.edu.eg"
     password = getpass("Please enter your password: ")
-    print("Example : 1 ---> displays courses of first year")
-    year = input("Please Enter Academic Year Number: ")
+    year = input("Please Enter Academic Year: ")
     print()
     print("1 ---> displays courses of fall\n2 ---> displays courses of spring\n3 ---> displays courses of summer\n")
     mode = int(input("Please Enter the semester: "))
     while(True):
         try:
-             doIt(mail,password,year,mode)
-             break
+            login(mail,password)
+            break
         except:
-            print("Retrying....")
             continue
+
+    while(True):
+        try:
+            a_all = getYear(year)
+            break
+        except:
+            continue
+
+    doIt(a_all,mode)   
 
             
 getGrade()
