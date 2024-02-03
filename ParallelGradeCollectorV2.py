@@ -37,7 +37,6 @@ def printGrades(falls,springs,summers):
         print("---------Summer Courses---------")
         for su in summers:
             print(su)
-            print(s)
             totalH += int(su.split(":")[2].split("(")[1][0])
             totalPoints += int(su.split(":")[2].split("(")[1][0])*float(s.split(":")[2].split("(")[2].split(")")[0])
         print()
@@ -47,20 +46,20 @@ def printGrades(falls,springs,summers):
 
 def checkmode(text,mode):
     if mode ==  FALL_MODE:
-        if "Spring" in text or "Summer" in text:
-            return False
-        else:
+        if "Fall" in text:
             return True
+        else:
+            return False
     elif mode == SPRING_MODE:
-        if "Fall" in text or "Summer" in text:
-            return False
-        else:
+        if "Spring" in text:
             return True
+        else:
+            return False
     else:
-        if "Fall" in text or "Spring" in text:
-            return False
-        else:
+        if "Summer" in text:
             return True
+        else:
+            return False
 
 
 def subjectInfo(head,session,falls,springs,summers,mode):
@@ -72,7 +71,6 @@ def subjectInfo(head,session,falls,springs,summers,mode):
             r3 = session.get(head["href"])
             break
         except:
-            print("Subject Collection Failed -- Retrying...")
             continue
     soup3 = BeautifulSoup(r3.text,features="html.parser")
     lis= soup3.find_all("li")
@@ -93,6 +91,8 @@ def subjectInfo(head,session,falls,springs,summers,mode):
 
 
 def login(mail,password):
+    global session
+    session = requests.session()
     url = 'https://eng.asu.edu.eg/login'
     login_data = dict()
     login_data["email"] = mail
@@ -122,13 +122,14 @@ def doIt(a_all,mode):
     for i in a_all:
         if "committee" in str(i):
             heads.append(i)
-    for i in heads:
-        thread = threading.Thread(target = subjectInfo,args = (i,session,falls,springs,summers,mode))
+    for head in heads:
+        thread = threading.Thread(target = subjectInfo,args = (head,session,falls,springs,summers,mode))
         thread.start()
         threads.append(thread)
     for j in range(len(threads)):
         threads[j].join()
     printGrades(falls,springs,summers)
+
 
 def getGrade():
     mail = input("Please enter your ID: ") + "@eng.asu.edu.eg"
@@ -138,20 +139,30 @@ def getGrade():
     print("1 ---> displays courses of fall\n2 ---> displays courses of spring\n3 ---> displays courses of summer\n")
     mode = int(input("Please Enter the semester: "))
     while(True):
-        try:
-            login(mail,password)
-            break
-        except:
+        #Try to Login (A New session is created for each login)
+        while(True):
+            try:
+                login(mail,password)
+                break
+            except:
+                print("Login failed retrying...")
+                continue
+        #Try to get year
+        #If number of retries >= 10 retry the entire process
+        num_retries = 0
+        while(True):
+            try:
+                a_all = getYear(year)
+                break
+            except:
+                if num_retries >= 10:
+                    break
+                num_retries+=1
+                continue
+        if num_retries >= 10:
             continue
-
-    while(True):
-        try:
-            a_all = getYear(year)
-            break
-        except:
-            continue
-
-    doIt(a_all,mode)   
+        doIt(a_all,mode)   
+        break
 
             
 getGrade()
