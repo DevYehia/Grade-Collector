@@ -63,7 +63,6 @@ def checkmode(text,mode):
 
 
 def subjectInfo(head,session,falls,springs,summers,mode):
-    print("Thread ID is ",threading.currentThread())
     courseName = head.contents[0]
     if checkmode(courseName,mode) == False:
         return
