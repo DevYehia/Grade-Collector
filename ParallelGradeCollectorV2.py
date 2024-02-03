@@ -156,8 +156,10 @@ def getGrade():
                 break
             except:
                 if num_retries >= 10:
+                    print("Max number of retries exceeded... ReDoing the whole process :(")
                     break
                 num_retries+=1
+                print("getYear failed retrying... Retries Count: ",num_retries)
                 continue
         if num_retries >= 10:
             continue
