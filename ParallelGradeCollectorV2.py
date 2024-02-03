@@ -137,8 +137,12 @@ def doIt(a_all,mode):
 
 def getGrade():
     mail = input("Please enter your ID: ") + "@eng.asu.edu.eg"
-    password = getpass("Please enter your password: ")
+    password = getpass("Please enter your password(don't worry the password you type is invisible): ")
+    print()
+    print("Example if you want 2023/2024, type 2023")
+    print()
     year = input("Please Enter Academic Year: ")
+
     print()
     print("1 ---> displays courses of fall\n2 ---> displays courses of spring\n3 ---> displays courses of summer\n")
     mode = int(input("Please Enter the semester: "))
