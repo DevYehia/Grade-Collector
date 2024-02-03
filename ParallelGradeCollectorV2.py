@@ -62,10 +62,8 @@ def checkmode(text,mode):
             return False
 
 
-def subjectInfo(head,session,falls,springs,summers,mode):
+def subjectInfo(head,session,falls,springs,summers):
     courseName = head.contents[0]
-    if checkmode(courseName,mode) == False:
-        return
     retries = 0
     while True:
         try:
@@ -127,9 +125,11 @@ def doIt(a_all,mode):
         if "committee" in str(i):
             heads.append(i)
     for head in heads:
-        thread = threading.Thread(target = subjectInfo,args = (head,session,falls,springs,summers,mode))
-        thread.start()
-        threads.append(thread)
+        courseName = head.contents[0]
+        if checkmode(courseName,mode) == True:
+            thread = threading.Thread(target = subjectInfo,args = (head,session,falls,springs,summers))
+            thread.start()
+            threads.append(thread)
     for j in range(len(threads)):
         threads[j].join()
     printGrades(falls,springs,summers)
