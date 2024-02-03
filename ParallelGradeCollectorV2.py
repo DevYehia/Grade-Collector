@@ -8,7 +8,7 @@ SPRING_MODE = 2
 SUMMER_MODE = 3
 lock = threading.Lock()
 session = requests.session()
-
+indextest = 0
 
 def printGrades(falls,springs,summers):
     totalH = 0
@@ -63,14 +63,19 @@ def checkmode(text,mode):
 
 
 def subjectInfo(head,session,falls,springs,summers,mode):
+    print("Thread ID is ",threading.currentThread())
     courseName = head.contents[0]
     if checkmode(courseName,mode) == False:
         return
+    retries = 0
     while True:
         try:
             r3 = session.get(head["href"])
             break
         except:
+            retries+=1
+            if retries >= 5:
+                return
             continue
     soup3 = BeautifulSoup(r3.text,features="html.parser")
     lis= soup3.find_all("li")
