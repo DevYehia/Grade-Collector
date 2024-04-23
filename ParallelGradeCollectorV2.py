@@ -176,4 +176,5 @@ def getGrade():
 
             
 getGrade()
-
+vbar=5 
+print(vbar)
