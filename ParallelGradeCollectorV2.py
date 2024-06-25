@@ -18,7 +18,10 @@ def printGrades(falls,springs,summers):
         for f in falls:
             print(f)
             totalH += int(f.split(":")[2].split("(")[1][0])
-            totalPoints += int(f.split(":")[2].split("(")[1][0])*float(f.split(":")[2].split("(")[2].split(")")[0])
+            try: #If list index out range ----> Grade F
+                totalPoints += int(f.split(":")[2].split("(")[1][0])*float(f.split(":")[2].split("(")[2].split(")")[0])
+            except:
+                totalPoints += 0
         print()
         print("GPA : " + str(round(totalPoints/totalH,2)))
     totalH = 0
@@ -28,7 +31,10 @@ def printGrades(falls,springs,summers):
         for s in springs:
             print(s)
             totalH += int(s.split(":")[2].split("(")[1][0])
-            totalPoints += int(s.split(":")[2].split("(")[1][0])*float(s.split(":")[2].split("(")[2].split(")")[0])
+            try: #If list index out range ----> Grade F
+                totalPoints += int(f.split(":")[2].split("(")[1][0])*float(f.split(":")[2].split("(")[2].split(")")[0])
+            except:
+                totalPoints += 0
         print()
         print("GPA : " + str(round(totalPoints/totalH,2)))
     totalH = 0
@@ -38,7 +44,10 @@ def printGrades(falls,springs,summers):
         for su in summers:
             print(su)
             totalH += int(su.split(":")[2].split("(")[1][0])
-            totalPoints += int(su.split(":")[2].split("(")[1][0])*float(s.split(":")[2].split("(")[2].split(")")[0])
+            try: #If list index out range ----> Grade F
+                totalPoints += int(f.split(":")[2].split("(")[1][0])*float(f.split(":")[2].split("(")[2].split(")")[0])
+            except:
+                totalPoints += 0
         print()
         print("GPA : " + str(round(totalPoints/totalH,2)))
         if(len(falls) == 0 and len(springs) == 0 and len(summers) == 0):
