@@ -1,5 +1,5 @@
 # ASU Grades Collector
-### In terminal: -
+### To run the Application: -
 ```bash
 streamlit run app.py
 ```
