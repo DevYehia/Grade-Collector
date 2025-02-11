@@ -104,10 +104,10 @@ def subjectInfo(head,session,falls,springs,summers):
 def login(mail,password):
     global session
     session = requests.session()
-    url = 'https://eng.asu.edu.eg/login'
+    url = 'https://eng.asu.edu.eg/log1n'
     login_data = dict()
-    login_data["email"] = mail
-    login_data["password"] = password
+    login_data["email1"] = mail
+    login_data["password1"] = password
     x = session.get(url)
     print("Got to Login Page")
     soup = BeautifulSoup(x.text,features="html.parser")
@@ -145,6 +145,7 @@ def doIt(a_all,mode):
 
 
 def getGrade():
+    #Taking Input from the user
     mail = input("Please enter your ID: ") + "@eng.asu.edu.eg"
     password = getpass("Please enter your password(don't worry the password you type is invisible): ")
     print()
